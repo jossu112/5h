@@ -18,20 +18,23 @@
 		
 	}
 	
-	//ei ole tyhjad, valjad mida salvestada
+	// ei ole tühjad väljad mida salvestada
 	if ( isset($_POST["gender"]) &&
 		 isset($_POST["color"]) &&
 		 !empty($_POST["gender"]) &&
 		 !empty($_POST["color"])
 	  ) {
 		
-		//login sisse
 		savePeople($_POST["gender"], $_POST["color"]);
-	}	
+	}
+	
 	$people = getAllPeople();
-	var_dump($people);
-	echo "</pre>"
-	  
+	
+	//echo "<pre>";
+	//var_dump($people);
+	//echo "</pre>";
+	
+	
 ?>
 <h1>Data</h1>
 <p>
@@ -84,6 +87,8 @@
 				$html .= "<td style=' background-color:".$p->clothingColor."; '>"
 						.$p->clothingColor
 						."</td>";
+				//<img width="200" src=' ".$url." '>
+						
 			$html .= "</tr>";	
 		}
 		

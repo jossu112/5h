@@ -1,9 +1,8 @@
 <?php
 	
 	//võtab ja kopeerib faili sisu
-	require("../../config.php");
 	require("functions.php");
-
+	
 	//kas kasutaja on sisse logitud
 	if (isset ($_SESSION["userId"])) {
 		
@@ -11,17 +10,16 @@
 		
 	}
 	//var_dump(5.5);
-		
+	
 	//var_dump($_GET);
 	//echo "<br>";
 	//var_dump($_POST);
 	
-	//muutujad
-	
+	// MUUTUJAD
 	$signupEmailError = "";
 	$signupPasswordError = "";
-	$signupGenderError = "";
 	$signupEmail = "";
+	$signupNumberError = "";
 	
 	// kas e/post oli olemas
 	if ( isset ( $_POST["signupEmail"] ) ) {
@@ -32,13 +30,13 @@
 			$signupEmailError = "See väli on kohustuslik!";
 			
 		} else {
-			//email oli 6ige, salvestan v22rtuse muutujad
+			
+			// email on õige, salvestan väärtuse muutujasse
 			$signupEmail = $_POST["signupEmail"];
 			
-		}	
-	}	
+		}
 		
-
+	}
 	
 	if ( isset ( $_POST["signupPassword"] ) ) {
 		
@@ -62,6 +60,7 @@
 		
 	}
 	
+	
 	$gender = "male";
 	// KUI Tühi
 	// $gender = "";
@@ -72,7 +71,8 @@
 		} else {
 			$gender = $_POST["gender"];
 		}
-	}	
+	}
+	
 	
 	// Kus tean et ühtegi viga ei olnud ja saan kasutaja andmed salvestada
 	if ( isset($_POST["signupPassword"]) &&
@@ -81,19 +81,24 @@
 		 empty($signupPasswordError)
 	   ) {
 		
-			echo "Salvestan...<br>";
-			echo "email ".$signupEmail."<br>";
-			
-			$password = hash("sha512", $_POST["signupPassword"]);
-			
-			echo "parool ".$_POST["signupPassword"]."<br>";
-			echo "räsi ".$password."<br>";
-			
-			//echo $serverPassword;
-			
-			signup($signupEmail, $password);
-	   }
-		$error = "";
+		echo "Salvestan...<br>";
+		echo "email ".$signupEmail."<br>";
+		
+		$password = hash("sha512", $_POST["signupPassword"]);
+		
+		echo "parool ".$_POST["signupPassword"]."<br>";
+		echo "räsi ".$password."<br>";
+		
+		//echo $serverPassword;
+		
+		signup($signupEmail, $password);
+	   
+	   
+		
+	}
+	
+	
+	$error = "";
 	// kontrollin, et kasutaja täitis välja ja võib sisse logida
 	if ( isset($_POST["loginEmail"]) &&
 		 isset($_POST["loginPassword"]) &&
@@ -105,35 +110,6 @@
 		$error = login($_POST["loginEmail"], $_POST["loginPassword"]);
 		
 	}
-		$database = "if16_JohanR";
-		
-		//ühendus
-		$mysqli = new mysqli($serverHost,$serverUsername,$serverPassword,$database);
-		
-		//käsk
-		$stmt = $mysqli->prepare("INSERT INTO user_sample (email, password) VALUES (?, ?)");
-		
-		echo $mysqli->error;
-		
-		//asendan küsimärgi väärtustega
-		//iga muutuja kohta 1 täht, mis tüüpi muutuja on
-		// s - string
-		// i - integer
-		// d - double/float
-		$stmt->bind_param("ss", $signupEmail, $password);
-		
-		if ($stmt->execute()) {
-				
-			echo "salvestamine õnnestus";
-	   } else {
-		    echo "ERROR ".$stmt->error;
-	   }
-	   
-	   
-		
-	
-	
-	
 	
 ?>
 <!DOCTYPE html>
@@ -146,7 +122,7 @@
 		<h1>Logi sisse</h1>
 		
 		<form method="POST">
-			
+			<p style="color:red;"><?=$error;?></p>
 			<label>E-post</label><br>
 			<input name="loginEmail" type="email">
 			
@@ -172,14 +148,11 @@
 			<input name="signupPassword" type="password" placeholder="Parool"> <?php echo $signupPasswordError; ?>
 			
 			<br><br>
-			 <label>vanus</label><br>
-			 <input name="signupAge" type="age"> <?php echo $signupPasswordError; ?>
 			
-			
-
-				
+			<input name="signupNumber" type="text" placeholder="Telefoninumber"> <?php echo $signupNumberError; ?>
 			
 			<br><br>
+			
 			 <?php if($gender == "male") { ?>
 				<input type="radio" name="gender" value="male" checked> Male<br>
 			 <?php } else { ?>
@@ -196,16 +169,12 @@
 				<input type="radio" name="gender" value="other" checked> Other<br>
 			 <?php } else { ?>
 				<input type="radio" name="gender" value="other" > Other<br>
-			 <?php } ?>			
-				
-				
-			<br><br>
+			 <?php } ?>
+			 
 			
 			<input type="submit" value="Loo kasutaja">
 			
 		</form>
-		
-		
 		
 	</body>
 </html>

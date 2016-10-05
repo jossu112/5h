@@ -2,6 +2,7 @@
 	
 	//functions.php
 	require("../../config.php");
+	
 	//alustan sessiooni, et saaks kasutada
 	//$_SESSSION muutujaid
 	session_start();
@@ -9,7 +10,7 @@
 	//********************
 	//****** SIGNUP ******
 	//********************
-	//$name = "romil";
+	//$name = "johan";
 	//var_dump($GLOBALS);
 	
 	$database = "if16_JohanR";
@@ -36,7 +37,7 @@
 		
 		$mysqli = new mysqli($GLOBALS["serverHost"],$GLOBALS["serverUsername"],$GLOBALS["serverPassword"],$GLOBALS["database"]);
 		$stmt = $mysqli->prepare("
-			SELECT id, email, password, created 
+			SELECT id, email, password
 			FROM user_sample
 			WHERE email = ?
 		");
@@ -46,7 +47,7 @@
 		$stmt->bind_param("s", $email);
 		
 		//määran tupladele muutujad
-		$stmt->bind_result($id, $emailFromDb, $passwordFromDb, $created);
+		$stmt->bind_result($id, $emailFromDb, $passwordFromDb);
 		$stmt->execute();
 		
 		//küsin rea andmeid
@@ -97,37 +98,42 @@
 			echo "ERROR ".$stmt->error;
 		}
 		
-	}	
+	}
+	
 	
 	function getAllPeople () {
 		
 		$mysqli = new mysqli($GLOBALS["serverHost"],$GLOBALS["serverUsername"],$GLOBALS["serverPassword"],$GLOBALS["database"]);
-		$stmt = $mysqli->prepare("SELECT id, gender, color FROM ClothingOnTheCampus");
+		$stmt = $mysqli->prepare("
+			SELECT id, gender, color
+			FROM ClothingOnTheCampus
+		");
 		echo $mysqli->error;
 		
 		$stmt->bind_result($id, $gender, $color);
 		$stmt->execute();
-		//array(Johan", "R")
+		
+		// array("Johan", "R")
 		$result = array();
-		//seni kuni on 1 rida andmeid saada (10rida = 10 korda)
-		while($stmt->fetch()) {
+		
+		// seni kuni on üks rida andmeid saada (10 rida = 10 korda)
+		while ($stmt->fetch()) {
+			
 			$person = new StdClass();
 			$person->id = $id;
 			$person->gender = $gender;
-			$person->clothingColor = $color;
+			$person->clothingColor = $color;;
+			
 			//echo $color."<br>";
-			array_push($result, $color);
+			array_push($result, $person);
 		}
 		
 		$stmt->close();
 		$mysqli->close();
 		
 		return $result;
+		
 	}
-	
-	
-	
-	
 	
 	
 	
@@ -151,6 +157,30 @@
 	$answer = sum(10,15);
 	echo $answer;
 	echo "<br>";
-	echo hello ("Johan", "J.");
+	echo hello ("Johan", "R.");
+	*/
+	
+	
+	/*
+	
+	function issetAndNotEmpty($var) {	
+		if ( isset ( $var ) ) {
+			if ( !empty ($var ) ) {
+				return true;			
+			}	
+		} 
+		
+		return false;	
+	}
+	
+	if (issetAndNotEmpty($_POST["loginEmail"])) {
+		
+		//vastab tõele
+		
+	}
+	
+	
+	
+	
 	*/
 ?>
